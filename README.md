@@ -53,6 +53,7 @@ server {
     }
     location /protected/ {
         internal;
+        add_header 'Access-Control-Allow-Origin' '*' always;
         alias /opt/s3_origin_shield/cache/;
     }
     location ~ \.php$ {
