@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'cache_path' => '/opt/origin_shield/cache',
+    'cache_path' => '/opt/s3_origin_shield/cache',
     'pull_zones' => [
         'kitties.ca-central-1.amazonaws.com' => [
             'credentials' => [

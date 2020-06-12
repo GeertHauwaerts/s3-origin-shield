@@ -34,8 +34,8 @@ as web and file server.
 
 ### Sample Configuration Parameters
 
-* Hostname: `origin-shield.example.com`
-* Root Path: `/opt/origin_shield`
+* Hostname: `s3-origin-shield.example.com`
+* Root Path: `/opt/s3_origin_shield`
 * App Path: `${ROOT_PATH}/repo`
 * Cache Path: `{$ROOT_PATH}/cache`
 
@@ -44,15 +44,15 @@ as web and file server.
 ```
 server {
     listen 8080;
-    server_name origin-shield.example.com;
-    root /opt/origin_shield/repo/public;
+    server_name s3-origin-shield.example.com;
+    root /opt/s3_origin_shield/repo/public;
     index index.php;
     location / {
         try_files $uri /index.php$is_args$args;
     }
     location /protected/ {
         internal;
-        alias /opt/origin_shield/cache/;
+        alias /opt/s3_origin_shield/cache/;
     }
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
@@ -109,10 +109,10 @@ ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :6081 -a :6086,PROXY -T 1
 
 > Note: The first empty `ExecStart=` is intended and not a mistake.
 
-#### /etc/varnish/conf/origin_shield.vcl
+#### /etc/varnish/conf/s3_origin_shield.vcl
 
 ```
-probe origin_shield_health {
+probe s3_origin_shield_health {
   .url = "/";
   .interval = 5s;
   .timeout = 3s;
@@ -120,20 +120,20 @@ probe origin_shield_health {
   .threshold =3;
 }
 
-backend origin_shield_1 {
+backend s3_origin_shield_1 {
   .host = "127.0.0.1";
   .port = "8080";
-  .probe = origin_shield_health;
+  .probe = s3_origin_shield_health;
 }
 
 sub vcl_init {
-  new origin_shield = directors.round_robin();
-  origin_shield.add_backend(origin_shield_1);
+  new s3_origin_shield = directors.round_robin();
+  s3_origin_shield.add_backend(s3_origin_shield_1);
 }
 
 sub vcl_recv {
-  if (req.http.host == "origin-shield.example.com") {
-    set req.backend_hint = origin_shield.backend();
+  if (req.http.host == "s3-origin-shield.example.com") {
+    set req.backend_hint = s3_origin_shield.backend();
     unset req.http.cookie;
     unset req.http.cache-control;
     unset req.http.pragma;
@@ -143,7 +143,7 @@ sub vcl_recv {
 }
 
 sub vcl_backend_response {
-  if (bereq.url == "origin-shield.example.com") {
+  if (bereq.url == "s3-origin-shield.example.com") {
     set beresp.ttl = 30d;
     return (deliver);
   }
@@ -156,7 +156,7 @@ sub vcl_backend_response {
 ### CDN Configuration
 
 Assuming you have a working pull zone for `https://kitties.ca-central-1.amazonaws.com`, all you
-need to do is change the URL to `https://origin-shield.example.com/?pz=kitties.ca-central-1.amazonaws.com`
+need to do is change the URL to `https://s3-origin-shield.example.com/?pz=kitties.ca-central-1.amazonaws.com`
 
 If you have issues with your Origin Shield, you can quickly reconfigure the CDN to pull from S3
 again directly.
