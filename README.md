@@ -167,7 +167,7 @@ sub vcl_backend_response {
 ### CDN Configuration
 
 Assuming you have a working pull zone for `https://kitties.ca-central-1.amazonaws.com`, all you
-need to do is change the URL to `https://s3-origin-shield.example.com/?pz=kitties.ca-central-1.amazonaws.com`
+need to do is change the URL to `https://s3-origin-shield.example.com/kitties.ca-central-1.amazonaws.com`
 
 If you have issues with your Origin Shield, you can quickly reconfigure the CDN to pull from S3
 again directly.
