@@ -75,6 +75,7 @@ class OriginShield
         }
 
         list(, $this->pullzone, $this->request) = explode('/', $_SERVER['REQUEST_URI'], 3) + [false, false, false];
+        $this->request = strstr($this->request, '?', true);
     }
 
     private function sendfile($file)
