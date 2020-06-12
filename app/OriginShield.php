@@ -74,15 +74,7 @@ class OriginShield
             return;
         }
 
-        list(, $this->pullzone, $this->request) = explode('/', $_SERVER['REQUEST_URI'], 3);
-
-        if (is_null($this->pullzone) || empty($this->pullzone)) {
-            $this->pullzone = false;
-        }
-
-        if (is_null($this->request) || empty($this->request)) {
-            $this->request = false;
-        }
+        list(, $this->pullzone, $this->request) = explode('/', $_SERVER['REQUEST_URI'], 3) + [false, false, false];
     }
 
     private function sendfile($file)
