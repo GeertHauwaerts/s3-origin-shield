@@ -65,6 +65,7 @@ class OriginShield
 
     private function sendfile($file)
     {
+        header('Content-Type: ');
         header("X-Accel-Redirect: /protected/{$file}");
         exit();
     }

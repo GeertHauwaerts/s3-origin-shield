@@ -45,6 +45,7 @@ as web and file server.
 server {
     listen 8080;
     server_name s3-origin-shield.example.com;
+    server_tokens off;
     root /opt/s3_origin_shield/repo/public;
     index index.php;
     location / {
@@ -143,8 +144,18 @@ sub vcl_recv {
 }
 
 sub vcl_backend_response {
-  if (bereq.url == "s3-origin-shield.example.com") {
+  if (bereq.http.host == "s3-origin-shield.example.com") {
     set beresp.ttl = 30d;
+
+    if (beresp.status == 404) {
+      set beresp.ttl = 120s;
+    }
+
+    if (beresp.status == 500) {
+      set beresp.ttl = 60s;
+      set beresp.uncacheable = true;
+    }
+
     return (deliver);
   }
 }
