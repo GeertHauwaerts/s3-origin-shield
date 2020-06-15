@@ -61,7 +61,7 @@ class OriginShield
             $this->notFound();
         }
 
-        $this->local->write($this->request, $s3['Body']);
+        $this->local->put($this->request, $s3['Body']);
         $this->sendfile("{$this->pullzone}/{$this->request}");
     }
 
