@@ -148,7 +148,7 @@ sub vcl_backend_response {
   if (bereq.http.host == "s3-origin-shield.example.com") {
     set beresp.ttl = 30d;
 
-    if (beresp.status != 200) {
+    if (beresp.status != 200 || beresp.http.Content-Length == "0") {
       set beresp.ttl = 60s;
       set beresp.uncacheable = true;
     }
